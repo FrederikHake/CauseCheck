@@ -28,11 +28,11 @@ Node --version
 
 4. Have Python version 3.9+ installed (3.8+ may also be fine)
 5. Run the setup.bat
-The run setup batch install all npm dependencies and pip modules that are need. 
-If the python modules should not be added to the global python libaries create a venv for the folder src/backend
+The run setup batch installs all npm dependencies and pip modules that are needed. 
+If the python modules should not be added to the global python libraries create a venv for the folder src/backend
 6. Start the application
 
-To start the application locally use the start.bat file. This file opens two terminals one for the frondend and one for the backend.
+To start the application locally use the start.bat file. This file opens two terminals one for the frontend and one for the backend.
 
 If the applications should be run independently use for the backend in the foldersrc/backend:
 '''
