@@ -1,0 +1,91 @@
+.container {
+    padding: 16px;
+}
+
+.general-heading {
+    margin-bottom: 16px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.box {
+    position: relative;
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.input-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.btn-add,
+.btn-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.error-messages {
+    margin-top: 16px;
+}
+
+.error-message {
+    color: red;
+}
+
+.status-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+}
+
+.status-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-next {
+    margin-top: 16px;
+}
+
+/* Adjustments for Dropdown Labels */
+.input-label {
+    margin-bottom: 4px;
+}
+
+/* Adjustments for Input Fields */
+.text-field {
+    width: 100%;
+    max-width: 160px; /* Adjust as needed */
+}
+
+.timestamp-fields {
+    display: flex;
+    gap: 16px;
+}
+.activity-status-container {
+    margin-top: 16px;
+}
+
+.activity-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
