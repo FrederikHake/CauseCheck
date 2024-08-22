@@ -47,17 +47,21 @@ class InsertDeviation(IDeviation):
             for i,element in enumerate(self.activities_to_insert):
                 event = log_instance.Event()
                 event[xes_constants.DEFAULT_NAME_KEY] = element
-
+                delta = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability("time:timestamp")
+                current_time += delta
+                timeadded += delta
+                event["time:timestamp"] = str(current_time)
                 delta = 0
                 for attrName in self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].attributes.keys():
-                    if self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].attributes[attrName]["type"] != "temporal":
-                        
+                    if not self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].attributes[attrName]["type"] == "temporal":
                         event[attrName] = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability(attrName)
                     else:
-                        delta = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability(attrName)
-                        current_time += delta
-                        timeadded += delta
-                        event["time:timestamp"] = current_time
+                        if attrName != "time:timestamp":
+                            delta = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability(attrName)
+                            if delta == 'null' or delta == '':
+                                event[attrName] = 'null'
+                            else:
+                                event[attrName] = str(current_time+delta)
                 newActivities.append(event)
 
 
@@ -66,7 +70,10 @@ class InsertDeviation(IDeviation):
         if position < len(trace._list):
             for event in trace._list[position+len(self.activities_to_insert):]:
                 try:
-                    event["time:timestamp"] = datetime.strptime(event["time:timestamp"].split('.')[0], "%Y-%m-%dT%H:%M:%S")+ timeadded
+                    try: 
+                        event["time:timestamp"] = datetime.strptime(event["time:timestamp"].split('.')[0], "%Y-%m-%dT%H:%M:%S")+ timeadded
+                    except:
+                        event["time:timestamp"] = datetime.strptime(event["time:timestamp"].split('.')[0], "%Y-%m-%d %H:%M:%S")+ timeadded
                 except:
                     event["time:timestamp"] = event["time:timestamp"]+ timeadded
         return trace._list

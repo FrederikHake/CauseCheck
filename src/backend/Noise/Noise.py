@@ -292,7 +292,10 @@ def getTimestamp(time):
         return time
     if type(time) == float:
         return datetime.datetime.fromtimestamp(int(time))
-    return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+    try: 
+        return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+    except:
+        return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")
 
 
 def _get_event_classes(log):

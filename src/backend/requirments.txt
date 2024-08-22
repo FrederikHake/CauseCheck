@@ -1,0 +1,4 @@
+pm4py==2.7.11.1
+Flask==3.0.3
+Flask-Cors==4.0.1
+Flask-Session==0.8.0

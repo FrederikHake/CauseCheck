@@ -76,7 +76,7 @@ class RepetitionDeviation(IDeviation):
                          event_time_delta.append(self.trace_manager.places[mod_trace[i+j]["concept:name"]].getAttributeByProbability("time:timestamp"))
                 else:
                     for j in range(len(self.place)):
-                        event_time_delta.append(datetime.fromisoformat(mod_trace[i+j]["time:timestamp"]) - datetime.fromisoformat(mod_trace[i - 1]["time:timestamp"]))
+                        event_time_delta.append(self.getTimestamp(mod_trace[i+j]["time:timestamp"]) - self.getTimestamp(mod_trace[i - 1]["time:timestamp"]))
                 # Perform repetitions
             
             time_delta =  timedelta()
@@ -110,16 +110,16 @@ class RepetitionDeviation(IDeviation):
                             currenttime_delta = event_time_delta[j]
                             currentTimeStamp = datetime(1970,1,1)
                             if 0 == i:
-                                currentTimeStamp = datetime.fromisoformat(mod_trace[0]["time:timestamp"]) - event_time_delta[j]
+                                currentTimeStamp = self.getTimestamp(mod_trace[0]["time:timestamp"]) - event_time_delta[j]
                             elif i < len(mod_trace):
-                                currentTimeStamp = datetime.fromisoformat(mod_trace[i-1]["time:timestamp"])
+                                currentTimeStamp = self.getTimestamp(mod_trace[i-1]["time:timestamp"])
                                 
                                 time_delta += event_time_delta[j]
                             else:
                                 if i < len(mod_trace):
-                                    currentTimeStamp = datetime.fromisoformat(mod_trace[i]["time:timestamp"])
+                                    currentTimeStamp = self.getTimestamp(mod_trace[i]["time:timestamp"])
                                 else:
-                                    currentTimeStamp = datetime.fromisoformat(mod_trace[-1]["time:timestamp"])
+                                    currentTimeStamp = self.getTimestamp(mod_trace[-1]["time:timestamp"])
                                 
                                 time_delta += event_time_delta[j]
                             new_event["time:timestamp"] = (currentTimeStamp + currenttime_delta).isoformat()
@@ -128,8 +128,18 @@ class RepetitionDeviation(IDeviation):
                             i = i+1    
                     
                     if i < len(mod_trace):
-                        mod_trace[i]["time:timestamp"] = datetime.fromtimestamp(datetime.timestamp(datetime.fromisoformat(mod_trace[i]["time:timestamp"]))+ time_delta.total_seconds()).isoformat()
+                        mod_trace[i]["time:timestamp"] = datetime.fromtimestamp(datetime.timestamp(self.getTimestamp(mod_trace[i]["time:timestamp"]))+ time_delta.total_seconds()).isoformat()
                         i = i + 1        
                            
 
             return mod_trace._list
+        
+    def getTimestamp(self,time):
+        if type(time) == datetime:
+            return time
+        if type(time) == float:
+            return datetime.fromtimestamp(int(time))
+        try: 
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+        except:
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")

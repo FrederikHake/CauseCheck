@@ -46,10 +46,10 @@ class PreviousAttributeCondition:
                 else:
                     previous_value = previousEvents[i].get("time:timestamp")
                 
-        current_value = current_value
-        previous_value = datetime.datetime.strptime(previous_value.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-        current_value = current_value - previous_value
-        current_value = current_value.total_seconds() 
+                current_value = current_value
+                previous_value = datetime.datetime.strptime(previous_value.split(".")[0], "%Y-%m-%dT%H:%M:%S")
+                current_value = current_value - previous_value
+                current_value = current_value.total_seconds() 
         
         if self.sign == '=' and current_value == self.attribute_value:
             return True

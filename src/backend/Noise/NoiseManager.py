@@ -22,25 +22,25 @@ class NoiseManager:
         self.noiseIsDone = False
         
     def setGeneralNoise(self,noise:float):
-        self.noise = noise
+        self.noise = noise/100
     
     def setSkipNoise(self,noise:float):
-        self.skipNoise = noise
+        self.skipNoise = noise/100
     
     def setInsertNoise(self, noise:float):
-        self.insertNoise = noise
+        self.insertNoise = noise/100
         
     def setSwapNoise(self, noise:float):
-        self.swapNoise = noise
+        self.swapNoise = noise/100
         
     def setReworkNoise(self, noise:float):
-        self.reworkNoise = noise
+        self.reworkNoise = noise/100
     
     def setEarlyNoise(self, noise:float):  
-        self.earlyNoise = noise
+        self.earlyNoise = noise/100
         
     def setLateNoise(self, noise:float):  
-        self.lateNoise = noise
+        self.lateNoise = noise/100
         
     def setDeviationNoise(self,deviationNoise):
        self.deviationNoise = deviationNoise   
@@ -81,7 +81,7 @@ class NoiseManager:
                             prev_events = []
                             for event in new_trace:
                                 if deviation.is_applicable(prev_events,event,new_trace,False):
-                                    if random.random() <= deviationNoise[1]:
+                                    if random.random() <= deviationNoise[1]/100:
                                         new_trace._list = deviation.execute(new_trace)
                                         found = True
                                         break

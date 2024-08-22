@@ -44,17 +44,22 @@ class ReplacementDeviation(IDeviation):
                     for j,element in enumerate(self.replacement_activities):
                         event = log_instance.Event()
                         event[xes_constants.DEFAULT_NAME_KEY] = element
-
-
+                        
+                        delta = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability("time:timestamp")
+                        current_time += delta
+                        timeadded += delta
+                        event["time:timestamp"] = str(current_time)
                         delta = 0
                         for attrName in self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].attributes.keys():
                             if not self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].attributes[attrName]["type"] == "temporal":
                                 event[attrName] = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability(attrName)
                             else:
-                                delta = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability(attrName)
-                                current_time += delta
-                                timeadded += delta
-                                event["time:timestamp"] = str(current_time)
+                                if attrName != "time:timestamp":
+                                    delta = self.traceManager.places[event[xes_constants.DEFAULT_NAME_KEY]].getAttributeByProbability(attrName)
+                                    if delta == 'null' or delta == '':
+                                        event[attrName] = 'null'
+                                    else:
+                                        event[attrName] = str(current_time+delta)
                         newActivities.append(event)
                     for event in trace[i+len(self.activities_to_replace):]:
                         try:

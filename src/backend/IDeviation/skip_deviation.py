@@ -34,11 +34,12 @@ class SkipDeviation(IDeviation):
             if i <= trace_len - skip_len and all(trace[i + j]["concept:name"] == self.activities_to_skip[j] for j in range(skip_len)):
                 i += skip_len  # Skip this sequence
                 if i >= skip_len:
-                    first_time = datetime.strptime(trace[i-skip_len-1]["time:timestamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
-                    second_time = datetime.strptime(trace[i-1]["time:timestamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+                    first_time = self.getTimestamp(trace[i-skip_len-1]["time:timestamp"])
+                    second_time = self.getTimestamp(trace[i-1]["time:timestamp"])
                     timeDelta +=  datetime.timestamp(first_time) -  datetime.timestamp(second_time)  
             else:
-                time = datetime.strptime(trace[i]["time:timestamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+                time = 0 
+                time = self.getTimestamp(trace[i]["time:timestamp"]) 
                 trace[i]["time:timestamp"] = datetime.fromtimestamp(datetime.timestamp(time) + timeDelta).isoformat()
                 new_events.append(trace[i])
                 
@@ -47,4 +48,13 @@ class SkipDeviation(IDeviation):
         return new_events
     # 0 , 1 ,2 ,3 ,4 
     # 1 , 2 ,3 ,4 ,5
-    
+
+    def getTimestamp(self,time):
+        if type(time) == datetime:
+            return time
+        if type(time) == float:
+            return datetime.fromtimestamp(int(time))
+        try: 
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+        except:
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")    
