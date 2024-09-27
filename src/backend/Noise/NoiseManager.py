@@ -4,6 +4,7 @@ from IDeviation.DeviationManager import DeviationManager
 from Noise import Noise
 import random
 from pm4py.objects.log.obj import EventLog
+from datetime import datetime
 
 from Traces.TraceManager import TraceManager
 class NoiseManager:
@@ -22,25 +23,25 @@ class NoiseManager:
         self.noiseIsDone = False
         
     def setGeneralNoise(self,noise:float):
-        self.noise = noise/100
+        self.noise = noise
     
     def setSkipNoise(self,noise:float):
-        self.skipNoise = noise/100
+        self.skipNoise = noise
     
     def setInsertNoise(self, noise:float):
-        self.insertNoise = noise/100
+        self.insertNoise = noise
         
     def setSwapNoise(self, noise:float):
-        self.swapNoise = noise/100
+        self.swapNoise = noise
         
     def setReworkNoise(self, noise:float):
-        self.reworkNoise = noise/100
+        self.reworkNoise = noise
     
     def setEarlyNoise(self, noise:float):  
-        self.earlyNoise = noise/100
+        self.earlyNoise = noise
         
     def setLateNoise(self, noise:float):  
-        self.lateNoise = noise/100
+        self.lateNoise = noise
         
     def setDeviationNoise(self,deviationNoise):
        self.deviationNoise = deviationNoise   
@@ -81,18 +82,33 @@ class NoiseManager:
                             prev_events = []
                             for event in new_trace:
                                 if deviation.is_applicable(prev_events,event,new_trace,False):
-                                    if random.random() <= deviationNoise[1]/100:
+                                    if random.random() <= deviationNoise[1]:
                                         new_trace._list = deviation.execute(new_trace)
                                         found = True
                                         break
                                 else:
                                     prev_events.append(event)
             new_log.append(new_trace)
-
+        for trace in log:
+            for event in trace:
+                    for attrName in event.keys():
+                        try:
+                            event[attrName] = self.getTimestamp().strftime("%Y-%m-%dT%H:%M:%S")
+                        except:
+                            pass  
         self.noisy_log = new_log
         self.noiseIsDone = True
         return new_log
     
+    def getTimestamp(time):
+        if type(time) == datetime:
+            return time
+        if type(time) == float:
+            return datetime.fromtimestamp(int(time))
+        try: 
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+        except:
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")
            
 
 def _get_event_classes(log):

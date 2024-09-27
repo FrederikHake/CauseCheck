@@ -445,7 +445,7 @@ class TraceManager:
                 prop = 0
                 for decision in logic_gate.logicGateDecisions.values():
                     prop += decision.probability
-                if prop <= 1 - 0.000001 or prop >= 1 + 0.000001:
+                if prop != 1:
                     raise ValueError(f"Sum of probabilities for XOR gateway {logic_gate.getLabel()} is not equal to 1.")
 
         while True:
@@ -534,7 +534,7 @@ class TraceManager:
                         event[activity_key] = element.label
                         trace.append(event)
                         event[timestamp_key] = curr_timestamp.isoformat()
-                        curr_timestamp += self.getTimedelta(self.places[element.label].getAttributeByProbability(timestamp_key))
+                        curr_timestamp += self.places[element.label].getAttributeByProbability(timestamp_key)
                         for attrName in self.places[element.label].attributes.keys():
                             if not self.places[element.label].attributes[attrName]["type"] == "temporal":
                                 event[attrName] = self.places[element.label].getAttributeByProbability(attrName)
@@ -547,20 +547,30 @@ class TraceManager:
                                         event[attrName] = datetime.strptime(event[timestamp_key].split(".")[0], "%Y-%m-%dT%H:%M:%S")+ value
                         
             log.append(trace)
-            
+        for trace in log:
+            for event in trace:
+                  for attrName in event.keys():
+                      try:
+                        event[attrName] = self.getTimestamp().strftime("%Y-%m-%dT%H:%M:%S")
+                      except:
+                        pass       
         return log    
+    
+    def getTimestamp(time):
+        if type(time) == datetime.datetime:
+            return time
+        if type(time) == float:
+            return datetime.datetime.fromtimestamp(int(time))
+        try: 
+            return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+        except:
+            return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")
+
     def setStartTime(self,starttime:datetime):
         self.startTime = starttime
     
     def setEndTime(self,endtime:datetime):
         self.endTime = endtime
             
-    def getTimedelta(self,time):
-        if type(time) == timedelta:
-            return time
-        if type(time) == float:
-            return timedelta(seconds=int(time))
-        if time == "null":
-            return timedelta(seconds=0)
-        return timedelta(time) 
+
 
