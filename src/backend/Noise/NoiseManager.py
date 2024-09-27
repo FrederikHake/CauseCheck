@@ -93,7 +93,7 @@ class NoiseManager:
             for event in trace:
                     for attrName in event.keys():
                         try:
-                            event[attrName] = self.getTimestamp().strftime("%Y-%m-%dT%H:%M:%S")
+                            event[attrName] = self.getTimestamp().strftime("%Y-%m-%dT%H:%M:%S").replace(tzinfo=None)
                         except:
                             pass  
         self.noisy_log = new_log
