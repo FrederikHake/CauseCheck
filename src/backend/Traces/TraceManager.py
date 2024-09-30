@@ -549,22 +549,26 @@ class TraceManager:
             log.append(trace)
         for trace in log:
             for event in trace:
-                  for attrName in event.keys():
-                      try:
-                        event[attrName] = self.getTimestamp().strftime("%Y-%m-%dT%H:%M:%S").replace(tzinfo=None)
-                      except:
-                        pass       
-        return log    
+                    for attrName in event.keys():
+                        print(event[attrName])
+                        try:
+                            timestamp = self.getTimestamp(event[attrName])
+                            event[attrName] = timestamp.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S")
+                            print(event[attrName])
+                        except:
+                            pass  
+        return log
     
-    def getTimestamp(time):
-        if type(time) == datetime.datetime:
+    def getTimestamp(self,time):
+        if type(time) == datetime:
             return time
         if type(time) == float:
-            return datetime.datetime.fromtimestamp(int(time))
+            return datetime.fromtimestamp(int(time))
         try: 
-            return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%dT%H:%M:%S")
         except:
-            return datetime.datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")
+            return datetime.strptime(time.split('.')[0], "%Y-%m-%d %H:%M:%S")
+           
 
     def setStartTime(self,starttime:datetime):
         self.startTime = starttime

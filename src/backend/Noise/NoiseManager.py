@@ -89,18 +89,21 @@ class NoiseManager:
                                 else:
                                     prev_events.append(event)
             new_log.append(new_trace)
-        for trace in log:
+        for trace in new_log:
             for event in trace:
                     for attrName in event.keys():
+                        print(event[attrName])
                         try:
-                            event[attrName] = self.getTimestamp().strftime("%Y-%m-%dT%H:%M:%S").replace(tzinfo=None)
+                            timestamp = self.getTimestamp(event[attrName])
+                            event[attrName] = timestamp.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S")
+                            print(event[attrName])
                         except:
                             pass  
         self.noisy_log = new_log
         self.noiseIsDone = True
         return new_log
     
-    def getTimestamp(time):
+    def getTimestamp(self,time):
         if type(time) == datetime:
             return time
         if type(time) == float:
